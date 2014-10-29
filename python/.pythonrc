@@ -1,0 +1,96 @@
+# -*- coding: UTF-8 -*-
+
+# enable syntax completion
+try:
+    import readline
+except ImportError:
+    print("Module readline not available.")
+else:
+    import rlcompleter
+    readline.parse_and_bind("tab: complete")
+
+# custom
+from pprint import pprint, pformat
+from operator import itemgetter
+from pydoc import pager
+try:
+    from tabulate import tabulate
+except ImportError:
+    pass
+
+# command history
+import os
+import atexit
+
+historyPath = os.path.expanduser("~/.pyhistory")
+def save_history(historyPath=historyPath):
+    import readline
+    readline.write_history_file(historyPath)
+
+if os.path.exists(historyPath):
+    readline.read_history_file(historyPath)
+
+atexit.register(save_history)
+
+del os, atexit, readline, rlcompleter, save_history, historyPath
+
+# add a file logger
+def add_file_logger(fname=None, logger_name='', level=None):
+    import logging
+    if not fname:
+        fname = (logger_name or 'root') + '.log'
+    if not level:
+        level = logging.DEBUG
+
+    l = logging.getLogger(logger_name)
+    l.setLevel(level)
+    logging.info("Logging in /tmp/%s", fname)
+
+    h = logging.FileHandler('/tmp/%s' % fname)
+    h.formatter = logging.Formatter("%(message)s")
+    l.addHandler(h)
+    return l
+
+# recursive reload
+def rreload(module):
+    from types import ModuleType
+    def _rreload(module, done):
+        reload(module)
+        for attr_name in dir(module):
+            if attr_name not in done:
+                m = getattr(module, attr_name)
+                if type(m) is ModuleType:
+                    done.add(attr_name)
+                    _rreload(m, done)
+    s = set()
+    _rreload(module, s)
+    print("Reloaded %i modules" % len(s))
+
+# Custom custom
+
+def dbg(fun, *args, **kwargs):
+    # evaluate and print local vars in case of exception
+    try:
+        return fun(*args, **kwargs)
+    except:
+        import inspect
+        v = inspect.trace()[-1][0].f_locals
+        pprint(v)
+        raise
+
+def return_exception(fun, *args, **kwargs):
+    try:
+        return fun(*args, **kwargs)
+    except BaseException as e:
+        return e
+
+def return_exception_with_locals(fun, *args, **kwargs):
+    try:
+        return fun(*args, **kwargs)
+    except BaseException as e:
+        import inspect
+        v = inspect.trace()[-1][0].f_locals
+        return e, v
+
+
+man = help
