@@ -1,0 +1,67 @@
+
+URxvt*scrollstyle:plain
+
+URxvt*font: xft:Terminus:pixelsize=14:antialias=true:autohinting=true,xft:Terminess Powerline:pixelsize=14:antialias=true:autohinting=true
+URxvt*boldFont: xft:Terminus:bold:pixelsize=14:antialias=true:autohinting=true,xft:Terminess Powerline:bold:pixelsize=14:antialias=true:autohinting=true
+! URxvt*font: xft:DejaVu Sans Mono:pixelsize=14:antialias=true:autohinting=true,xft:DejaVu Sans Mono for Powerline:pixelsize=14:antialias=true:autohinting=true
+! URxvt*boldFont: xft:DejaVu Sans Mono:bold:pixelsize=14:antialias=true:autohinting=true,xft:DejaVu Sans Mono for Powerline:bold:pixelsize=14:antialias=true:autohinting=true
+! URxvt*font: xft:DejaVu Sans Mono for Powerline:pixelsize=14:antialias=true:autohinting=true
+! URxvt*boldFont: xft:DejaVu Sans Mono for Powerline:bold:pixelsize=14:antialias=true:autohinting=true
+
+URxvt.depth: 32
+URxvt.background: rgba:1111/1111/1122/BBBB
+URxvt.foreground: #efefff
+
+URxvt.perl-ext-common: default,matcher,clipboard,url-select,keyboard-select
+URxvt.keysym.M-u:      perl:url-select:select_next
+URxvt.keysym.M-Escape:      perl:keyboard-select:activate
+URxvt.keysym.M-s:           perl:keyboard-select:search
+URxvt.url-select.underline:   true
+URxvt.url-select.launcher:     xdg-open
+URxvt.matcher.button:   1
+
+URxvt.urgentOnBell: true
+
+
+dzen2.font: xft:Bitstream Vera Sans Mono:size=10:bold:antialias=true
+dzen2.foreground:  grey
+dzen2.background:  black
+
+
+! Normal
+! color0 black
+! color1 red
+! color2 green
+! color3 yellow
+! color4 blue
+! color5 purple
+! color6 cyan
+! color7 white
+
+urxvt*color0: #8e6762
+urxvt*color1: #e9695c
+urxvt*color2: #76e76d
+urxvt*color3: #dcab06
+urxvt*color4: #798deb
+urxvt*color5: #ea56ea
+urxvt*color6: #89caec
+urxvt*color7: #fdfdfd
+
+! Light
+! color8 black
+! color9 red
+! color10 green
+! color11 yellow
+! color12 blue
+! color13 purple
+! color14 cyan
+! color15 white
+
+urxvt*color8: #ae8782
+urxvt*color9: #f98276
+urxvt*color10: #93f786
+urxvt*color11: #ecbb16
+urxvt*color12: #96beff
+urxvt*color13: #fb81fb
+urxvt*color14: #b7d9fc
+urxvt*color15: #eeeeee
