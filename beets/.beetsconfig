@@ -1,0 +1,6 @@
+[beets]
+directory: /home/music
+library: /home/music/.beetsmusic.blb
+
+import_copy: no
+import_log: /home/music/.beetsimport.log
