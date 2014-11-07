@@ -122,3 +122,7 @@ function update-adblock() {
     curl http://someonewhocares.org/hosts/zero/hosts -o /etc/hosts.d/adblock 2> /dev/null
     update-hosts
 }
+
+video() {
+    youtube-dl "${1:-$(xclip -o)}" -o - | mpv -
+}
