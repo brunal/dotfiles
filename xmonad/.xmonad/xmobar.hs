@@ -1,4 +1,4 @@
-Config { font = "xft:terminus:size=10:antialias=true"
+Config { font = "-*-terminus-*-*-*-*-14-*-*-*-*-*-*-*"
     , bgColor = "#000000"
     , fgColor = "grey"
     , position = TopW L 90
@@ -13,4 +13,3 @@ Config { font = "xft:terminus:size=10:antialias=true"
     , alignSep = "}{"
     , template = " %StdinReader%}{ %cpu% | %memory% | %enp3s0% | <fc=#ee9a00>%date%</fc> "
 }
-
