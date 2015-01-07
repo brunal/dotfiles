@@ -1,0 +1,8 @@
+
+directory: ~/Musique
+library: ~/.beetsmusic.blb
+plugins: fetchart lyrics lastgenre mpdstats mpdupdate web discogs
+
+import:
+    move: yes
+    log: ~/.beetsimport.log
