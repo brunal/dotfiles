@@ -59,8 +59,7 @@ launch_xmonad() {
 
   xchat &
 
-  exec xmonad
-  #exec dbus-launch xmonad
+  exec dbus-launch xmonad
   #sxhkd &
   #exec dbus-launch bspwm
 }
