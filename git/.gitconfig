@@ -14,8 +14,6 @@
 
 [help]
     autocorrect = 1
-[color]
-    ui = true
 [merge]
     defaultToUpstream = 1
     tool = vimdiff
