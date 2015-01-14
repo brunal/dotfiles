@@ -42,13 +42,10 @@ if [[ :$PATH: != :*$HOME/.local/bin:* ]]; then
         export PATH=$PATH:~/.local/bin
 fi;
 
-export PATH=~/.local/bin:$PATH
-
 export PYTHONSTARTUP=~/.pythonrc
 export PYTHONPATH=$PYTHONPATH:src:~/.local
 
 export WORKON_HOME=~/venvs
-#export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python2.7
 source $(which virtualenvwrapper.sh)
 alias w='workon'
 
