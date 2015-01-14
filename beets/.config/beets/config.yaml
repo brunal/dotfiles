@@ -1,8 +1,23 @@
 
 directory: ~/Musique
 library: ~/.beetsmusic.blb
-plugins: fetchart lyrics lastgenre mpdstats mpdupdate web discogs
+plugins: fetchart lyrics lastgenre mpdstats web discogs chroma smartplaylist info mpdupdate
 
 import:
     move: yes
     log: ~/.beetsimport.log
+
+smartplaylist:
+    relative_to: ~/Musique
+    playlist_dir: ~/.config/mpd/playlists
+    playlists:
+        - name: tout.m3u
+          query: ''
+        - name: sixties.m3u
+          query: 'original_year::196.'
+        - name: seventies.m3u
+          query: 'original_year::197.'
+        - name: récent.m3u
+          query: 'original_year::20..'
+        - name: indie.m3u
+          query: 'genre:indie'
