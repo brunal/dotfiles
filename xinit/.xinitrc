@@ -24,12 +24,6 @@ xrdb -merge .Xresources
 # compositing
 xcompmgr &
 
-# lastfm scribbler
-pidof mpdscribble >& /dev/null
-if [ $? -ne 0 ]; then
-    mpdscribble &
-fi
-
 # merge & manage clipboards
 parcellite &
 
@@ -51,6 +45,20 @@ setxkbmap -option compose:caps
 if [[ :$PATH: != :*$HOME/.cabal/bin:* ]]; then
         export PATH=$PATH:~/.cabal/bin
 fi;
+if [[ :$PATH: != :*$HOME/.local/bin:* ]]; then
+        export PATH=$PATH:~/.local/bin
+fi;
+
+mpd ~/.config/mpd/mpd.conf
+
+pidof mpdscribble >& /dev/null
+if [ $? -ne 0 ]; then
+    mpdscribble &
+fi
+
+beet mpdstats &
+beet mpdupdate &
+
 
 launch_xmonad() {
   # changes the cursor
