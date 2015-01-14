@@ -30,6 +30,9 @@ if [ $? -ne 0 ]; then
     mpdscribble &
 fi
 
+# merge & manage clipboards
+parcellite &
+
 pidof xflux >& /dev/null
 if [ $? -ne 0 ]; then
     xflux -l 48.708918 -g 2.162232
