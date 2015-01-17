@@ -21,3 +21,5 @@ smartplaylist:
           query: 'original_year::20..'
         - name: indie.m3u
           query: 'genre:indie'
+        - name: jack white.m3u
+          query: ['"Jack White"', '"The White Stripes"', '"The Raconteurs"', '"Dead Weather"']
