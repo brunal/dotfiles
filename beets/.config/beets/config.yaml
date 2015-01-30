@@ -1,11 +1,13 @@
-
 directory: ~/Musique
 library: ~/.beetsmusic.blb
-plugins: fetchart lyrics lastgenre mpdstats web discogs chroma smartplaylist info mpdupdate
+plugins: fetchart lyrics lastgenre mpdstats web discogs chroma smartplaylist info mpdupdate fromfilename duplicates thumbnails
 
 import:
     move: yes
     log: ~/.beetsimport.log
+
+paths:
+    singleton: $artist/$title
 
 smartplaylist:
     relative_to: ~/Musique
@@ -23,3 +25,5 @@ smartplaylist:
           query: 'genre:indie'
         - name: jack white.m3u
           query: ['"Jack White"', '"The White Stripes"', '"The Raconteurs"', '"Dead Weather"']
+        - name: français.m3u
+          query: ['country:FR', 'language:fra']

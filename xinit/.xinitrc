@@ -57,7 +57,6 @@ if [ $? -ne 0 ]; then
 fi
 
 beet mpdstats &
-beet mpdupdate &
 
 
 launch_xmonad() {
