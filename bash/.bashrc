@@ -75,6 +75,8 @@ for comm in $commands_to_complete; do
     source /usr/share/bash-completion/completions/$comm
 done
 
+
+source ~/.config/beets/completion.sh
 source /usr/share/git/completion/git-completion.bash
 
 # stderr in red ♥
@@ -120,6 +122,14 @@ function update-adblock() {
     update-hosts
 }
 
-video() {
+streamit() {
     youtube-dl "${1:-$(xclip -o)}" -o - | mpv -
+}
+
+getit() {
+    youtube-dl $(xclip -o)
+}
+
+cloneit() {
+    git clone $(xclip -o)
 }
