@@ -49,13 +49,6 @@ if [[ :$PATH: != :*$HOME/.local/bin:* ]]; then
         export PATH=$PATH:~/.local/bin
 fi;
 
-mpd ~/.config/mpd/mpd.conf
-
-pidof mpdscribble >& /dev/null
-if [ $? -ne 0 ]; then
-    mpdscribble &
-fi
-
 beet mpdstats &
 
 

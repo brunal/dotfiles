@@ -20,7 +20,6 @@ alias rm='rm -I'
 alias transmission='transmission-gtk'
 alias unison-sync='unison rudy-netbook -batch'
 alias pacman='sudo pacman'      # because I'm lazy
-alias systemctl='sudo systemctl'
 alias cal='cal -m'              # because weeks start on Monday ffs
 
 alias sudo='sudo '              # so I can do sudo <aliased command>
