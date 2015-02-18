@@ -21,9 +21,6 @@ xset fp rehash
 # mostly urxvt customisation
 xrdb -merge .Xresources
 
-# compositing
-xcompmgr &
-
 # merge & manage clipboards
 parcellite &
 
@@ -53,6 +50,8 @@ beet mpdstats &
 
 
 launch_xmonad() {
+  compton &
+
   # changes the cursor
   xsetroot -cursor_name left_ptr
   # and the tray
@@ -61,6 +60,8 @@ launch_xmonad() {
   # cat ~/.menu | dzen2 -p -w 160 -x 1440 -m -l $(wc -l ~/.menu | awk '{print $1-1}') &
 
   xchat &
+  connman-ui-gtk &
+  sonata --hidden &
 
   exec dbus-launch xmonad
   #sxhkd &
