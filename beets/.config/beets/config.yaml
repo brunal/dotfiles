@@ -1,7 +1,9 @@
 directory: ~/Musique
 library: ~/.beetsmusic.blb
-plugins: fetchart lyrics lastgenre mpdstats web discogs chroma smartplaylist info mpdupdate fromfilename duplicates thumbnails
+plugins: fetchart lyrics lastgenre mpdstats web discogs chroma smartplaylist info mpdupdate fromfilename duplicates thumbnails play
 
+play:
+    command: /usr/bin/mpv --playlist
 import:
     move: yes
     log: ~/.beetsimport.log
