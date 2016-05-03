@@ -1,76 +1,101 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import XMonad hiding ((|||))
-import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.UrgencyHook
-import XMonad.Config.Desktop
+import XMonad.Config.Gnome
+import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.EwmhDesktops
 import qualified XMonad.StackSet as W
 import XMonad.Layout.LayoutCombinators
 import XMonad.Layout.Spacing
 import XMonad.Layout.NoBorders
-import XMonad.Config.Azerty
 import qualified Data.Map as M
 
+import XMonad.Hooks.DynamicLog
+import qualified DBus as D
+import qualified DBus.Client as D
+import qualified Codec.Binary.UTF8.String as UTF8
+
 main = do
-        barConf  <- statusBar bar myPP toggleBar myConfig
-        xmonad barConf
+    dbus <- D.connectSession
+    getWellKnownName dbus
+    xmonad myConfig { logHook = dynamicLogWithPP $ prettyPrinter dbus }
 
-bar = "xmobar .xmonad/xmobar.hs"
-myPP = xmobarPP { ppUrgent = xmobarColor "red" "blue" . xmobarStrip }
-toggleBar XConfig {modMask = modm} = (modm, xK_b)
-
-myConfig = desktopConfig
+myConfig = gnomeConfig
         { modMask = mod4Mask
+        , manageHook = manageDocks
         , layoutHook = myLayout
         , keys = newKeys
         , workspaces = myWorkspaces
---        , manageHook = newManageHook
         , terminal = "urxvtc"
         , borderWidth = 3
         , focusedBorderColor = "blue"
-        , handleEventHook = fullscreenEventHook
+        , handleEventHook = docksEventHook <+> fullscreenEventHook
         }
 
-newKeys x = M.union  (M.fromList $ myKeys x) $ azertyKeys x <+> keys defaultConfig x
+newKeys x = M.fromList (myKeys x) <+> keys defaultConfig x
 
 myKeys (XConfig {modMask = modm }) =
-        [ ((0, 0x1008FF14), spawn "mpc toggle")
-        , ((0, 0x1008FF15), spawn "mpc stop")
-        , ((0, 0x1008FF16), spawn "mpc prev")
-        , ((0, 0x1008FF17), spawn "mpc next")
-        , ((0, 0x1008FF12), spawn "amixer sset Master toggle")
-        , ((0, 0x1008FF13), spawn "amixer sset PCM 10+")
-        , ((0, 0x1008FF11), spawn "amixer sset PCM 10-")
-        , ((modm, xK_p),    spawn yeganesh)
-        , ((modm, xK_u),    focusUrgent)
-        , ((modm, xK_F1),   sendMessage $ JumpToLayout "Spacing 3 Tall")
-        , ((modm, xK_F2),   sendMessage $ JumpToLayout "Mirror Spacing 3 Tall")
+        [ ((modm, xK_u),    focusUrgent)
+        , ((modm, xK_b),    sendMessage ToggleStruts)
+        , ((modm, xK_F1),   sendMessage $ JumpToLayout "Spacing 9 Tall")
+        , ((modm, xK_F2),   sendMessage $ JumpToLayout "Mirror Spacing 9 Tall")
         , ((modm, xK_F3),   sendMessage $ JumpToLayout "Full")
         , ((0, xK_Print),   spawn "scrot")
         , ((shiftMask, xK_Print),   spawn "sleep 0.2; scrot -s")
         , ((shiftMask .|. modm, xK_Escape), spawn "xscreensaver-command --lock")
         , ((shiftMask, xK_Escape), spawn "xscreensaver-command --lock")
         ]
-        ++
-        -- Azerty layout
-        [((m .|. modm, xK_z),    screenWorkspace 0 >>= flip whenJust (windows . f))
-          | (f,m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
-
-yeganesh = "exe=`dmenu_path_c | yeganesh --` && exec $exe"
-
---myWorkspaces = ["1", "2:web"] ++ map show [3..9]
 myWorkspaces = map show [1..9]
 
-myLayout = smartBorders $ Mirror tiled ||| tiled ||| Full
+myLayout = avoidStruts . smartBorders $ Mirror tiled ||| tiled ||| noBorders Full
     where
-        tiled = spacing 7 $ Tall nmaster delta ratio
+        tiled = spacing 9 $ Tall nmaster delta ratio
         nmaster = 1
         ratio = 1/2
         delta = 3/100
 
-newManageHook = myManageHook <+> manageHook defaultConfig
-myManageHook = composeAll
-    [ className =? "Chromium" --> doShift "2:web"
-     , className /=? "Chromium" <&&> currentWs =? "2:web" --> doShift "3" <+> doF (W.greedyView "3")
-    ]
+-- gnome applet-related stuff
+
+prettyPrinter :: D.Client -> PP
+prettyPrinter dbus = defaultPP
+    { ppOutput   = dbusOutput dbus
+    , ppTitle    = pangoSanitize
+    , ppCurrent  = pangoColor "blue" . wrap "[" "]" . pangoSanitize
+    , ppVisible  = pangoColor "light blue" . wrap "(" ")" . pangoSanitize
+    , ppHidden   = pangoSanitize
+    , ppHiddenNoWindows = const " "
+    , ppUrgent   = pangoColor "red"
+    , ppLayout   = const ""
+    , ppSep      = "    "
+    }
+
+getWellKnownName :: D.Client -> IO ()
+getWellKnownName dbus = do
+  D.requestName dbus (D.busName_ "org.xmonad.Log")
+                [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+  return ()
+
+dbusOutput :: D.Client -> String -> IO ()
+dbusOutput dbus str = do
+    let signal = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update") {
+            D.signalBody = [D.toVariant $ "<b>" ++ (UTF8.decodeString str) ++ "</b>"]
+        }
+    D.emit dbus signal
+
+pangoColor :: String -> String -> String
+pangoColor fg = wrap left right
+  where
+    left  = "<span foreground=\"" ++ fg ++ "\">"
+    right = "</span>"
+
+pangoSanitize :: String -> String
+pangoSanitize = foldr sanitize ""
+  where
+    sanitize '>'  xs = "&gt;" ++ xs
+    sanitize '<'  xs = "&lt;" ++ xs
+    sanitize '\"' xs = "&quot;" ++ xs
+    sanitize '&'  xs = "&amp;" ++ xs
+    sanitize x    xs = x:xs
