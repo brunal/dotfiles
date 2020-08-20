@@ -1,6 +1,7 @@
 [user]
     name = Bruno Cauet
-    email = cauet@google.com
+    #email = cauet@google.com
+    email = brunocauet@gmail.com
 [push]
     default = tracking
 [alias]

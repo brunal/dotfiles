@@ -1,5 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
+I{-# LANGUAGE OverloadedStrings #-}
 
+import XMonad.Actions.PhysicalScreens
 import XMonad hiding ((|||))
 import XMonad.Hooks.UrgencyHook
 import XMonad.Config.Gnome
@@ -13,14 +14,16 @@ import XMonad.Layout.NoBorders
 import qualified Data.Map as M
 
 import XMonad.Hooks.DynamicLog
-import qualified DBus as D
-import qualified DBus.Client as D
+-- import qualified DBus as D
+-- import qualified DBus.Client as D
 import qualified Codec.Binary.UTF8.String as UTF8
 
-main = do
-    dbus <- D.connectSession
-    getWellKnownName dbus
-    xmonad myConfig { logHook = dynamicLogWithPP $ prettyPrinter dbus }
+import Data.Default
+
+-- main = do
+--     dbus <- D.connectSession
+--     getWellKnownName dbus
+main = xmonad myConfig -- { logHook = dynamicLogWithPP $ prettyPrinter dbus }
 
 myConfig = gnomeConfig
         { modMask = mod4Mask
@@ -46,6 +49,11 @@ myKeys (XConfig {modMask = modm }) =
         , ((shiftMask, xK_Print),   spawn "sleep 0.2; scrot -s")
         , ((shiftMask .|. modm, xK_Escape), spawn "xscreensaver-command --lock")
         , ((shiftMask, xK_Escape), spawn "xscreensaver-command --lock")
+        ] ++
+        -- screen id based on their position
+        [ ((modm .|. mask, key), f def sc)
+            | (key, sc) <- zip [xK_w, xK_e] [0..]
+            , (f, mask) <- [(viewScreen, 0), (sendToScreen, shiftMask)]
         ]
 
 myWorkspaces = map show [1..9]
@@ -54,36 +62,36 @@ myLayout = avoidStruts . smartBorders $ Mirror tiled ||| tiled ||| noBorders Ful
     where
         tiled = spacing 9 $ Tall nmaster delta ratio
         nmaster = 1
-        ratio = 1/2
         delta = 3/100
+        ratio = 1/2
 
 -- gnome applet-related stuff
 
-prettyPrinter :: D.Client -> PP
-prettyPrinter dbus = defaultPP
-    { ppOutput   = dbusOutput dbus
-    , ppTitle    = pangoSanitize
-    , ppCurrent  = pangoColor "blue" . wrap "[" "]" . pangoSanitize
-    , ppVisible  = pangoColor "light blue" . wrap "(" ")" . pangoSanitize
-    , ppHidden   = pangoSanitize
-    , ppHiddenNoWindows = const " "
-    , ppUrgent   = pangoColor "red"
-    , ppLayout   = const ""
-    , ppSep      = "    "
-    }
+-- prettyPrinter :: D.Client -> PP
+-- prettyPrinter dbus = defaultPP
+--     { ppOutput   = dbusOutput dbus
+--     , ppTitle    = pangoSanitize
+--     , ppCurrent  = pangoColor "blue" . wrap "[" "]" . pangoSanitize
+--     , ppVisible  = pangoColor "light blue" . wrap "(" ")" . pangoSanitize
+--     , ppHidden   = pangoSanitize
+--     , ppHiddenNoWindows = const " "
+--     , ppUrgent   = pangoColor "red"
+--     , ppLayout   = const ""
+--     , ppSep      = "    "
+--     }
 
-getWellKnownName :: D.Client -> IO ()
-getWellKnownName dbus = do
-  D.requestName dbus (D.busName_ "org.xmonad.Log")
-                [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
-  return ()
+-- getWellKnownName :: D.Client -> IO ()
+-- getWellKnownName dbus = do
+--   D.requestName dbus (D.busName_ "org.xmonad.Log")
+--                 [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+--   return ()
 
-dbusOutput :: D.Client -> String -> IO ()
-dbusOutput dbus str = do
-    let signal = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update") {
-            D.signalBody = [D.toVariant $ "<b>" ++ (UTF8.decodeString str) ++ "</b>"]
-        }
-    D.emit dbus signal
+-- dbusOutput :: D.Client -> String -> IO ()
+-- dbusOutput dbus str = do
+--     let signal = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update") {
+--             D.signalBody = [D.toVariant $ "<b>" ++ (UTF8.decodeString str) ++ "</b>"]
+--         }
+--    D.emit dbus signal
 
 pangoColor :: String -> String -> String
 pangoColor fg = wrap left right

@@ -5,6 +5,11 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+if [ -d "$HOME/.cabal/bin" ]; then
+  PATH="$PATH:$HOME/.cabal/bin"
+fi
+
+alias fu=fileutil
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
 alias ll='ls -lah'
@@ -42,18 +47,12 @@ shopt -s cmdhist
 shopt -s histappend
 PROMPT_COMMAND="history -a"
 export HISTCONTROL=ignoreboth:erasedups
-export HISTSIZE=100000
+export HISTSIZE=1000000
 
 # Random stuff
 alias traceroute='echo "Did you mean mtr?" && traceroute'
 
-# I'm a fucking slacker
-alias n='mpc'
-alias nn='mpc next'
-alias np='mpc toggle'
-alias pp='mpc prev'
-
-set -o vi
+# set -o vi
 bind -m vi-insert "\C-l":clear-screen #^L in vi mode
 
 # completions
@@ -99,13 +98,64 @@ function update-adblock() {
 }
 
 # google
-alias pastebin='/google/src/head/depot/eng/tools/pastebin'
+mydiff() { colordiff -u $1 $2 | less -R; }
+export -f mydiff
+VD() { P4DIFF=vimdiff g4 diff $@; }
+export -f VD
+export P4DIFF="mydiff"
+alias sedall='xargs sed -i'
+
+alias pprint='$(g4 maptofiles //depot/google3/experimental/users/cauet/ppprint.sh)'
 alias ppdiff='$(g4 maptofiles //depot/google3/ads/production/optimization/patchpanel/tools/ppdiff.sh)'
 alias multi_ppdiff='$(g4 maptofiles //depot/google3/ads/production/optimization/patchpanel/tools/multi_ppdiff.sh)'
 
-function mydiff() { colordiff -u $1 $2 | less -R; }
-export -f mydiff
-export P4DIFF="mydiff"
-alias sedall='xargs sed -i'
+alias pastebin=/google/src/head/depot/eng/tools/pastebin
 alias g4mv=/google/src/head/depot/google3/experimental/g4mv/g4mv.py
 alias gpython=/google/data/ro/projects/sst/gpython
+alias iblaze=/google/data/ro/teams/iblaze/iblaze
+alias blaze-run.sh=/google/src/head/depot/google3/devtools/blaze/scripts/blaze-run.sh
+alias jcfmt=/google/data/ro/teams/job-config/jcfmt
+alias datamanager='/google/data/ro/teams/ads-optimization-sre/tools/datamanager --prodspec=ads-optimization-sre'
+
+alias drainctl=/google/data/ro/projects/ads-frontend/drainctl
+alias drainctl=/google/data/ro/projects/ads-frontend/drainctl
+export PRODSPEC_NAME=ads-optimization-sre
+export FRAGMENT_NAME=ads-optimization-sre
+
+alias prodaccess='prodaccess && /google/data/ro/users/di/diamondm/engfortunes/fortune.sh'
+export G4PENDINGSTYLE=relativepath
+
+alias latest_iba_samples=/google/src/head/depot/google3/experimental/users/cauet/latest_iba_samples.sh
+alias btcfg=/google/data/ro/projects/bigtable/contrib/btcfg/btcfg
+alias onborg=/google/data/ro/projects/smartass/onborg
+alias readability_tool=/google/data/ro/teams/python-readability/readability_tool
+alias edit_bt_schema=/google/src/files/head/depot/google3/experimental/users/cauet/update_bigtable_schema.sh
+alias acls=/google/data/ro/projects/ganpati/acls
+alias aclcheck=/google/data/ro/projects/ganpati/aclcheck
+
+function csedit() {
+  $EDITOR $(csearch "$@" | cut -d: -f1 | uniq | cut -d/ -f8-)
+}
+
+export LC_ALL="en_US.UTF-8"
+
+alias bgrep=/google/data/ro/teams/borgtools/bgrep
+alias bkill=/google/data/ro/teams/borgtools/bkill
+alias annealing=/google/data/ro/teams/annealing/live/annealing
+
+# blaze build $(all_targets)
+all_targets() {
+  g4 whatsout \
+    | cut -d/ -f8- \
+    | xargs -n1 -I@ sh -c "fullname=\$(blaze query @ 2>/dev/null); blaze query \"attr('srcs', \$fullname, \${fullname//:*/}:*)\" 2>/dev/null" \
+    | sort \
+    | uniq
+  }
+
+
+alias pubsub2cfg=/google/data/ro/projects/goops/pubsub2cfg
+alias pubsub=/google/data/ro/projects/goops/pubsub
+
+# Helps vim have the right colorscheme when running under gnu screen.
+# cf. https://stackoverflow.com/a/6918905
+set TERM=xterm-256color

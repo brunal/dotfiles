@@ -1,4 +1,3 @@
-
 URxvt*scrollstyle:plain
 
 URxvt*font: xft:Terminus:pixelsize=14:antialias=true:autohinting=true,xft:Terminess Powerline:pixelsize=14:antialias=true:autohinting=true
@@ -12,7 +11,8 @@ URxvt.depth: 32
 URxvt.background: rgba:1111/1111/1122/BBBB
 URxvt.foreground: #efefff
 
-URxvt.perl-ext-common: default,matcher,clipboard,url-select,keyboard-select
+! URxvt.perl-ext-common: default,matcher,clipboard,url-select,keyboard-select
+URxvt.perl-ext-common: default,matcher
 URxvt.keysym.M-u:      perl:url-select:select_next
 URxvt.keysym.M-Escape:      perl:keyboard-select:activate
 URxvt.keysym.M-s:           perl:keyboard-select:search

@@ -1,17 +1,14 @@
-# executed by lightdm
+# executed by lightdm, for all environments.
 
+echo "actually running .xsessionrc wow wow"
 # terminal emulator daemon
-# urxvtd -q -f -o
+urxvtd -q -f -o
 
-# adds fonts to the path
-# xset +fp /usr/share/fonts/local
-# xset fp rehash
-
-# mostly urxvt customisation
-# xrdb -merge .Xresources
+# mostly urxvt customisation. Apparently not needed.
+xrdb -merge .Xresources
 
 # merge & manage clipboards
-# parcellite &
+parcellite &
 
 # pidof xflux >& /dev/null
 # if [ $? -ne 0 ]; then
@@ -19,12 +16,17 @@
 # fi
 
 # screensaver
-# xscreensaver -nosplash &
-
-# sets the background
-# eval $(cat ~/.fehbg)
+xscreensaver -nosplash &
 
 # caps lock is compose
 setxkbmap -option compose:caps
 
+# uncomment once I get my screens back
+# xrandr --output DP-4 --rotate left --output DP-5 --rotate right --right-of DP-4
+
+# sets the background
+~/.fehbg &
+
 xcompmgr &
+
+xchat &
