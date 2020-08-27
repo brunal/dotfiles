@@ -1,2 +1,11 @@
 Beware, for here are my dotfiles
 
+Usage
+-----
+
+Something like
+$ git submodule init --update --recursive
+$ stow git
+$ stow bash
+$ stow vim
+
