@@ -1,4 +1,4 @@
-I{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 import XMonad.Actions.PhysicalScreens
 import XMonad hiding ((|||))
