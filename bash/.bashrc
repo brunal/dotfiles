@@ -133,8 +133,14 @@ alias edit_bt_schema=/google/src/files/head/depot/google3/experimental/users/cau
 alias acls=/google/data/ro/projects/ganpati/acls
 alias aclcheck=/google/data/ro/projects/ganpati/aclcheck
 
+
 function csedit() {
+  if [ $# -eq 0 ]; then
+    echo "No arguments provided"
+    return 1
+  fi
   $EDITOR $(csearch "$@" | cut -d: -f1 | uniq | cut -d/ -f8-)
+  $EDITOR $(cs "$@" | cut -d: -f1 | uniq | cut -d/ -f8-)
 }
 
 export LC_ALL="en_US.UTF-8"
@@ -145,12 +151,21 @@ alias annealing=/google/data/ro/teams/annealing/live/annealing
 
 # blaze build $(all_targets)
 all_targets() {
+  pushd . >/dev/null
+  g4d
   g4 whatsout \
     | cut -d/ -f8- \
     | xargs -n1 -I@ sh -c "fullname=\$(blaze query @ 2>/dev/null); blaze query \"attr('srcs', \$fullname, \${fullname//:*/}:*)\" 2>/dev/null" \
     | sort \
     | uniq
+  popd >/dev/null
   }
+
+# Continuously build the affected targets.
+# Caveat: a new file modified won't be picked up.
+iblaze_all() {
+  iblaze build $(all_targets)
+}
 
 
 alias pubsub2cfg=/google/data/ro/projects/goops/pubsub2cfg
