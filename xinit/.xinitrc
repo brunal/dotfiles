@@ -1,6 +1,6 @@
 # executed by lightdm, for all environments.
 
-echo "actually running .xsessionrc wow wow"
+echo "actually running .xinitrc wow wow"
 # terminal emulator daemon
 urxvtd -q -f -o
 
@@ -26,7 +26,3 @@ setxkbmap -option compose:caps
 
 # sets the background
 ~/.fehbg &
-
-xcompmgr &
-
-xchat &
