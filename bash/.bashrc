@@ -140,13 +140,14 @@ function csedit() {
     return 1
   fi
   $EDITOR $(csearch "$@" | cut -d: -f1 | uniq | cut -d/ -f8-)
-  $EDITOR $(cs "$@" | cut -d: -f1 | uniq | cut -d/ -f8-)
+  # $EDITOR $(cs "$@" | cut -d: -f1 | uniq | cut -d/ -f8-)
 }
 
 export LC_ALL="en_US.UTF-8"
 
 alias bgrep=/google/data/ro/teams/borgtools/bgrep
 alias bkill=/google/data/ro/teams/borgtools/bkill
+alias btail=/google/data/ro/teams/borgtools/btail
 alias annealing=/google/data/ro/teams/annealing/live/annealing
 
 # blaze build $(all_targets)
